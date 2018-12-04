@@ -2,10 +2,13 @@ import React, { Component } from "react";
 import FriendCard from "./components/FriendCard";
 import Wrapper from "./components/Wrapper";
 import Title from "./components/Title";
+import AddText from "./components/AddText";
 import cards from "./cards.json";
 
 var chosen = [];
+var hiscore = 0;
 
+// function to shuffle the card order in a new array of ids
 function shuffleArray(array) {
   let i = array.length - 1;
   for (; i > 0; i--) {
@@ -23,21 +26,22 @@ class App extends Component {
     cards
   };
 
-
-  // removeFriend = id => {
-  //   // Filter this.state.cards for cards with an id not equal to the id being removed
-  //   const cards = this.state.cards.filter(friend => friend.id !== id);
-  //   // Set this.state.cards equal to the new cards array
-  //   this.setState({ cards });
-  // };
-
+    // a select method to determine what happens when a card is clicked
     select = id => {
-      chosen.push('newvalue');
-    // Filter this.state.cards for cards with an id not equal to the id being removed
-    const cards = this.state.cards.filter(friend => friend.id !== id);
-    // Set this.state.cards equal to the new cards array
-    this.setState({ cards });
+      // if the id chosen has already been chosen, reset the chosen array and reshuffle
+      if (chosen.includes(id)) {
+      chosen = [];
+      this.setState({ cards });
+      // if the id hasn't been chosen, push the id to the 'chosen' array, set the new high
+      // score to be equal to the length of the array (current score), and reshuffle
+      } else {
+      chosen.push(id);
+      if (chosen.length > hiscore) {
+      hiscore = chosen.length;
+      };
+      this.setState({ cards });
   };
+}
 
 
   // Map over this.state.cards and render a FriendCard component for each friend object
@@ -45,9 +49,9 @@ class App extends Component {
     const shuffledCards = shuffleArray(this.state.cards);
     return (
       <Wrapper>
-        <Title>Clicky Game for Android IDs</Title>
+        <Title>Clicky Game for Android: Netrunner IDs</Title>
+        <AddText>Click each ID card only once!         Score: {chosen.length}        High Score: {hiscore}</AddText>
 
-        {/* {this.state.cards.map(friend => ( */}
         {shuffledCards.map(friend => (  
           <FriendCard
             select={this.select}
